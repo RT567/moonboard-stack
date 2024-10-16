@@ -1,0 +1,40 @@
+ok... so how re-frame works
+
+views which are built on subscriptions to the DB element
+
+some elements, such as a button have an [:on-click] "attribute" which is a function which will happen when the button is clicked
+
+sensible code will have these on click attributes as functions which call "dispatch"
+
+
+note: the attribute is a function which operator is re-frame/dispatch
+#(re-frame/dispatch [:clear-holds])
+
+you can pass a lot of things to the function you are "dispatching to" in this case, nothing is passed
+
+the function which is being dispatched is ":clear-holds"
+
+
+within events:
+you call 
+re-frame.core/reg-event-db to associate an event id (label) to a function 
+
+(re-frame.core/reg-event-db        ;; <-- call this to register a handler
+    :set-flag                      ;; this is an event id
+   (fn [db [_ new-value]]          ;; this function does the handling
+      (assoc db :flag new-value)))
+
+when we dont just want to make changes to db instead we can call
+
+re-frame.core/reg-event-fx
+
+When returning things from an fx type association you instead need to return a whole MAP of effects 
+
+(reg-event-fx                              ;; <1>
+   :my-event
+   (fn [{:keys [db]} [_ a]]                ;; <2>
+      {:db  (assoc db :flag true)          ;; <3>
+       :dispatch [:do-something-else 3]}))
+
+There are two effects for this event, one is the traditional db event, the other is some other effect which needs to be also dispatched
+
