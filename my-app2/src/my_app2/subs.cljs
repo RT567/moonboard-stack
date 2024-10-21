@@ -12,3 +12,8 @@
  ::db
  (fn [db query]
    (:selected-holds db)))
+
+(re-frame/reg-sub
+ ::grade
+ (fn [db]
+   (:grade db)))

@@ -99,6 +99,10 @@
   (let [db (re-frame/subscribe [::subs/db])]
     [re-com/p db]))
 
+(defn grade-value []
+  (let [grade (re-frame/subscribe [::subs/grade])]
+    [re-com/p @grade]))
+
 (defn main-panel []
   [re-com/h-box
    :size "auto"
@@ -116,9 +120,10 @@
                           [re-com/v-box
                            :gap "10px"
                            :align :center
-                           :children [[re-com/button :label "grade climb" :on-click #(re-frame/dispatch [:scrnshot])]
+                           :children [[re-com/button :label "grade climb" :on-click #(re-frame/dispatch [:grade-climb])]
                                       [re-com/button :label "clear holds" :on-click #(re-frame/dispatch [:clear-holds])]]]
                           [db-value]
+                          [grade-value]
 
                           [image-with-hardcoded-location 300 20] ;; top and left, not implemented for others...
                           [entire-grid-of-toggleable-rings 300]
