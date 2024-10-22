@@ -41,8 +41,9 @@
  :grade-climb
  (fn [{:keys [db]} _]
    (let [holds (:selected-holds db)]
+     (print "in grade event")
      {:http-xhrio {:method          :post
-                   :uri             "https://fastapi-example-f6yd.onrender.com"  ; Update with your backend URL
+                   :uri             "https://moonboard-fastapi.onrender.com/grade_climb"  ; Update with your backend URL
                    :params          {:holds holds}
                    :format          (ajax/json-request-format)
                    :response-format (ajax/json-response-format {:keywords? true})
@@ -56,10 +57,12 @@
  :process-response
  (fn [db [_ response]]
    (let [grade (:grade response)]
+     (print grade)
      (assoc db :grade grade :flag false))))
 
 ;; Event to process failed requests
 (re-frame/reg-event-db
  :process-fail
  (fn [db [_ error]]
+   ;; (print error)
    (assoc db :error error :flag false)))

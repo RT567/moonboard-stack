@@ -101,7 +101,7 @@
 
 (defn grade-value []
   (let [grade (re-frame/subscribe [::subs/grade])]
-    [re-com/p @grade]))
+    [re-com/p "This climb has been classified by the model as: "@grade]))
 
 (defn main-panel []
   [re-com/h-box
@@ -122,7 +122,8 @@
                            :align :center
                            :children [[re-com/button :label "grade climb" :on-click #(re-frame/dispatch [:grade-climb])]
                                       [re-com/button :label "clear holds" :on-click #(re-frame/dispatch [:clear-holds])]]]
-                          [db-value]
+                          ;;[db-value]
+                          [re-com/gap :size "15px"]
                           [grade-value]
 
                           [image-with-hardcoded-location 300 20] ;; top and left, not implemented for others...
