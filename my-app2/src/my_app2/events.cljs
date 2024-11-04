@@ -47,7 +47,7 @@
                    :params          {:holds holds}
                    :format          (ajax/json-request-format)
                    :response-format (ajax/json-response-format {:keywords? true})
-                   :timeout         8000
+                   :timeout         60000
                    :on-success      [:process-response]
                    :on-failure      [:process-fail]}
       :db (assoc db :flag true)})))
