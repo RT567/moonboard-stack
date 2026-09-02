@@ -47,10 +47,10 @@
                    :params          {:holds holds}
                    :format          (ajax/json-request-format)
                    :response-format (ajax/json-response-format {:keywords? true})
-                   :timeout         60000
+                   :timeout         180000
                    :on-success      [:process-response]
                    :on-failure      [:process-fail]}
-      :db (assoc db :flag true)})))
+      :db (assoc db :flag true :error nil :grade nil)})))
 
 ;; Event to process successful responses
 (re-frame/reg-event-db
@@ -58,7 +58,7 @@
  (fn [db [_ response]]
    (let [grade (:grade response)]
      (print grade)
-     (assoc db :grade grade :flag false))))
+     (assoc db :grade grade :flag false :error nil))))
 
 ;; Event to process failed requests
 (re-frame/reg-event-db

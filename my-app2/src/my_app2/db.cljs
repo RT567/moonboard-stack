@@ -3,6 +3,6 @@
 (def default-db
   {:name           "re-frame"
    :selected-holds []
-   :grade          "V3"
+   :grade          nil
    :flag           false
    :error          nil})

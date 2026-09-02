@@ -100,8 +100,18 @@
     [re-com/p db]))
 
 (defn grade-value []
-  (let [grade (re-frame/subscribe [::subs/grade])]
-    [re-com/p "This climb has been classified by the model as: "@grade]))
+  (let [grade   (re-frame/subscribe [::subs/grade])
+        loading (re-frame/subscribe [::subs/loading])
+        error   (re-frame/subscribe [::subs/error])]
+    (cond
+      @loading [re-com/v-box
+                :align :center
+                :gap "8px"
+                :children [[re-com/throbber :size :large]
+                           [re-com/p "grading... the server sleeps when idle, so the first one can take a minute or two"]]]
+      @error   [re-com/p {:style {:color "#c00"}} "grading failed, try again"]
+      @grade   [re-com/p "This climb has been classified by the model as: " @grade]
+      :else    [re-com/p "click some holds and then click grade climb"])))
 
 (defn main-panel []
   [re-com/h-box
@@ -115,7 +125,7 @@
                :children [[re-com/gap :size "30px"]
                           [top-banner]
                           [re-com/gap :size "30px"]
-                          [re-com/title :label "Use machine learning to grade MoonBoard climbs!"]
+                          [re-com/title :label "Use machine learning to grade MoonBoard climbs! Warning: this is a prototype and inference can take up to two minutes..."]
                           [re-com/gap :size "30px"]
                           [re-com/v-box
                            :gap "10px"

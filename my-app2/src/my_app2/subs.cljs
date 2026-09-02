@@ -17,3 +17,13 @@
  ::grade
  (fn [db]
    (:grade db)))
+
+(re-frame/reg-sub
+ ::loading
+ (fn [db]
+   (:flag db)))
+
+(re-frame/reg-sub
+ ::error
+ (fn [db]
+   (:error db)))
