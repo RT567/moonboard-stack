@@ -10,17 +10,21 @@
   [re-com/h-box
    :height "60px"
    :style {:font-size "20px"} ;; :background-color "#ffef45" :color "#33c4f5" 
-   :children [[:img {:src "nice-size.png" :height "50px" :width "80px"}]
+   :children [[:img {:src "nice-size.png" :height "50px" :width "64px"}]
               [re-com/gap :size "30px"]
               [re-com/title :label "MoonGrader"]]])
 
+;; Left edge shared by the board image, the rings and the hold buttons: centred, never off the left edge.
+;; All three must use this same value; their pixel offsets from it are tuned to line up with the photo.
+(def board-left "max(0px, calc(50% - 200px))")
+
 ;; background moonboard image, hardcoded size and location
-(defn image-with-hardcoded-location [top left]
+(defn image-with-hardcoded-location [top]
   (let [topstring (str top "px")]
    [re-com/h-box
     :style {:position "absolute"
             :top topstring
-            :left (str left "%")}
+            :left board-left}
     :children [[:img {:src "mb2019.jpg" :width "400px" :height "600px"}]]]))
 
 ;; helper function for creating rows, given some number, x spits out 
@@ -48,7 +52,7 @@
   [re-com/h-box
    :width "1000px"
    :style {:position "absolute"
-           :left "20%"
+           :left board-left
            :top (str top "px")}
    :children [[re-com/gap :size "35px"]
               [re-com/gap :size (str shift-right "px")] ;35px
@@ -69,7 +73,7 @@
    :width "400px"
    :style {:position "absolute"
            :top (str top "px")
-           :left "20%"}
+           :left board-left}
    :children (invisible-row-of-buttons rownumber)])
 
 (defn create-h-box-of-toggleable-rings [top rownumber db]
@@ -115,17 +119,17 @@
       :else    [:p {:style (assoc text :color "#666")} "click some holds, then grade climb"])))
 
 ;; Everything above the board must fit in the 300px before the board's hard-coded top (see
-;; image-with-hardcoded-location), or it slides underneath the board. The header column is 400px wide
-;; at the same 20% left offset as the board so the two line up.
+;; image-with-hardcoded-location), or it slides underneath the board.
 (defn main-panel []
   [re-com/h-box
    :size "auto"
+   :justify :center
    :align :stretch
    :children [[re-com/v-box
                :src      (at)
                :height   "100%"
                :width    "400px"
-               :style    {:margin-left "20%" :max-width "80%"}
+               :style    {:max-width "100%"}
                :align :center
                :children [[re-com/gap :size "20px"]
                           [top-banner]
@@ -142,6 +146,6 @@
                           [re-com/gap :size "14px"]
                           [re-com/box :height "60px" :align :start :child [grade-value]]
 
-                          [image-with-hardcoded-location 300 20] ;; top and left, not implemented for others...
+                          [image-with-hardcoded-location 300]
                           [entire-grid-of-toggleable-rings 300]
                           [entire-invisible-grid-of-buttons 300]]]]])
