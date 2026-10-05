@@ -102,39 +102,45 @@
 (defn grade-value []
   (let [grade   (re-frame/subscribe [::subs/grade])
         loading (re-frame/subscribe [::subs/loading])
-        error   (re-frame/subscribe [::subs/error])]
+        error   (re-frame/subscribe [::subs/error])
+        text    {:margin 0 :max-width "400px" :text-align "center"}]
     (cond
-      @loading [re-com/v-box
+      @loading [re-com/h-box
                 :align :center
-                :gap "8px"
-                :children [[re-com/throbber :size :large]
-                           [re-com/p "grading... the server sleeps when idle, so the first one can take a minute or two"]]]
-      @error   [re-com/p {:style {:color "#c00"}} "grading failed, try again"]
-      @grade   [re-com/p "This climb has been classified by the model as: " @grade]
-      :else    [re-com/p "click some holds and then click grade climb"])))
+                :gap "10px"
+                :children [[re-com/throbber :size :regular]
+                           [:p {:style (assoc text :color "#666")} "grading... the first one can take a minute or two while the server wakes up"]]]
+      @error   [:p {:style (assoc text :color "#c00")} "grading failed, try again"]
+      @grade   [:p {:style text} "predicted grade: " [:strong {:style {:font-size "22px"}} @grade]]
+      :else    [:p {:style (assoc text :color "#666")} "click some holds, then grade climb"])))
 
+;; Everything above the board must fit in the 300px before the board's hard-coded top (see
+;; image-with-hardcoded-location), or it slides underneath the board. The header column is 400px wide
+;; at the same 20% left offset as the board so the two line up.
 (defn main-panel []
   [re-com/h-box
    :size "auto"
-   :justify :center
    :align :stretch
    :children [[re-com/v-box
                :src      (at)
                :height   "100%"
+               :width    "400px"
+               :style    {:margin-left "20%" :max-width "80%"}
                :align :center
-               :children [[re-com/gap :size "30px"]
+               :children [[re-com/gap :size "20px"]
                           [top-banner]
-                          [re-com/gap :size "30px"]
-                          [re-com/title :label "Use machine learning to grade MoonBoard climbs! Warning: this is a prototype and inference can take up to two minutes..."]
-                          [re-com/gap :size "30px"]
-                          [re-com/v-box
+                          [re-com/gap :size "8px"]
+                          [:p {:style {:margin 0 :max-width "400px" :text-align "center" :font-size "15px"}}
+                           "Use machine learning to grade MoonBoard climbs."
+                           [:br]
+                           [:span {:style {:color "#888" :font-size "13px"}} "Prototype: grading can take up to two minutes."]]
+                          [re-com/gap :size "16px"]
+                          [re-com/h-box
                            :gap "10px"
-                           :align :center
-                           :children [[re-com/button :label "grade climb" :on-click #(re-frame/dispatch [:grade-climb])]
+                           :children [[re-com/button :label "grade climb" :class "btn-primary" :on-click #(re-frame/dispatch [:grade-climb])]
                                       [re-com/button :label "clear holds" :on-click #(re-frame/dispatch [:clear-holds])]]]
-                          ;;[db-value]
-                          [re-com/gap :size "15px"]
-                          [grade-value]
+                          [re-com/gap :size "14px"]
+                          [re-com/box :height "60px" :align :start :child [grade-value]]
 
                           [image-with-hardcoded-location 300 20] ;; top and left, not implemented for others...
                           [entire-grid-of-toggleable-rings 300]
