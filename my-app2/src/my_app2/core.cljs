@@ -4,8 +4,7 @@
    [re-frame.core :as re-frame]
    [my-app2.events :as events]
    [my-app2.views :as views]
-   [my-app2.config :as config]
-   ))
+   [my-app2.config :as config]))
 
 
 (defn dev-setup []

@@ -3,8 +3,7 @@
    [re-frame.core :as re-frame]
    [my-app2.db :as db]
    [ajax.core :as ajax]
-   [day8.re-frame.http-fx]
-   ))
+   [day8.re-frame.http-fx]))
 
 (re-frame/reg-event-db
  ::initialize-db
@@ -29,21 +28,11 @@
    (assoc db :selected-holds nil)))
 
 (re-frame/reg-event-fx
- :grade-climb-old-broken
- (fn [{:keys [db]} event-vec]
-   {:http {:method :get
-           :url "http://httpbin.org/get"
-           :on-success [:process-response]
-           :on-fail [:process-fail]}
-    :db (assoc db :flag true)}))
-
-(re-frame/reg-event-fx
  :grade-climb
  (fn [{:keys [db]} _]
    (let [holds (:selected-holds db)]
-     (print "in grade event")
      {:http-xhrio {:method          :post
-                   :uri             "https://moonboard-fastapi.onrender.com/grade_climb"  ; Update with your backend URL
+                   :uri             "https://moonboard-fastapi.onrender.com/grade_climb"
                    :params          {:holds holds}
                    :format          (ajax/json-request-format)
                    :response-format (ajax/json-response-format {:keywords? true})
@@ -56,13 +45,10 @@
 (re-frame/reg-event-db
  :process-response
  (fn [db [_ response]]
-   (let [grade (:grade response)]
-     (print grade)
-     (assoc db :grade grade :flag false :error nil))))
+   (assoc db :grade (:grade response) :flag false :error nil)))
 
 ;; Event to process failed requests
 (re-frame/reg-event-db
  :process-fail
  (fn [db [_ error]]
-   ;; (print error)
    (assoc db :error error :flag false)))

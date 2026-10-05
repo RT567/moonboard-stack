@@ -2,14 +2,12 @@
   (:require
    [re-frame.core :as re-frame]
    [re-com.core :as re-com :refer [at]]
-   [my-app2.subs :as subs]
-   [reagent.core :as reagent]
-   [my-app2.db :as db]))
+   [my-app2.subs :as subs]))
 
 (defn top-banner []
   [re-com/h-box
    :height "60px"
-   :style {:font-size "20px"} ;; :background-color "#ffef45" :color "#33c4f5" 
+   :style {:font-size "20px"}
    :children [[:img {:src "nice-size.png" :height "50px" :width "64px"}]
               [re-com/gap :size "30px"]
               [re-com/title :label "MoonGrader"]]])
@@ -98,10 +96,6 @@
         db (re-frame/subscribe [::subs/db])]
     [re-com/v-box
      :children (vec (map #(create-h-box-of-toggleable-rings %1 %2 db) row-pixel-heights row-numbers))]))
-
-(defn db-value []
-  (let [db (re-frame/subscribe [::subs/db])]
-    [re-com/p db]))
 
 (defn grade-value []
   (let [grade   (re-frame/subscribe [::subs/grade])
